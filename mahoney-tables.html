@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Mahoney Tables — Climatic Design Guidelines</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#16191d; --muted:#606a76; --line:#dfe3e8;
+  --accent:#1f6feb; --accent-soft:#e8f0fe;
+  --hot:#c2410c; --hot-bg:#fdece3;
+  --comfort:#15803d; --comfort-bg:#e7f5ec;
+  --cold:#1d4ed8; --cold-bg:#e6edfd;
+  --warn:#b45309; --warn-bg:#fdf4e3;
+  --lift:45%;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#14171b; --panel:#1c2126; --ink:#e8ecf1; --muted:#9aa5b1; --line:#2c333b;
+    --accent:#6ea8fe; --accent-soft:#1d2b45;
+    --hot:#fb923c; --hot-bg:#3a2113;
+    --comfort:#4ade80; --comfort-bg:#12301e;
+    --cold:#93b4fd; --cold-bg:#16223f;
+    --warn:#fbbf24; --warn-bg:#33280f;
+    --lift:62%;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 20px 80px}
+header.top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:22px}
+h1{font-size:24px;margin:0;letter-spacing:-.01em}
+h1 small{display:block;font-size:13px;font-weight:400;color:var(--muted);letter-spacing:0;margin-top:4px}
+h2{font-size:17px;margin:0 0 4px}
+h4{font-size:13px;margin:20px 0 6px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+section.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 18px 20px;margin-bottom:18px;
+}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px}
+button, label.filebtn{
+  font:inherit;font-size:13px;font-weight:500;
+  background:var(--panel);color:var(--ink);border:1px solid var(--line);
+  border-radius:7px;padding:7px 13px;cursor:pointer;
+}
+button:hover:not(:disabled), label.filebtn:hover{border-color:var(--accent);color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.primary:hover{opacity:.9;color:#fff}
+button.seg{border-radius:0;margin-left:-1px}
+button.seg:first-of-type{border-radius:7px 0 0 7px;margin-left:0}
+button.seg:last-of-type{border-radius:0 7px 7px 0}
+button.seg.on{background:var(--accent);border-color:var(--accent);color:#fff}
+button:disabled{opacity:.42;cursor:not-allowed}
+input[type=file]{display:none}
+
+#drop{
+  border:2px dashed var(--line);border-radius:var(--radius);
+  padding:22px;text-align:center;color:var(--muted);font-size:14px;
+  transition:.15s;cursor:pointer;margin-bottom:14px;
+}
+#drop:hover,#drop.over{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+#drop b{color:var(--ink)}
+#drop.over b{color:var(--accent)}
+
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border:1px solid var(--line);padding:5px 7px;text-align:center;white-space:nowrap}
+th{background:var(--bg);font-weight:600}
+td.lab,th.lab{text-align:left;white-space:normal;min-width:172px;font-weight:500}
+td.res{background:var(--bg);color:var(--muted)}
+td.hi{font-weight:600;color:var(--ink)}
+tr.spacer td{border:0;height:8px;padding:0}
+input.cell{
+  width:100%;min-width:46px;border:1px solid transparent;background:transparent;
+  color:inherit;font:inherit;font-size:13px;text-align:center;padding:2px;border-radius:4px;
+}
+input.cell:hover{border-color:var(--line)}
+input.cell:focus{outline:none;border-color:var(--accent);background:var(--panel)}
+input.cell.txt{min-width:40px}
+input.wide{width:100%;max-width:280px;border:1px solid var(--line);background:var(--panel);
+  color:inherit;font:inherit;padding:6px 9px;border-radius:7px}
+select{font:inherit;font-size:13px;padding:6px 9px;border-radius:7px;border:1px solid var(--line);
+  background:var(--panel);color:inherit}
+.meta{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:16px}
+.meta label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+
+/* reference tables */
+table.ref{width:auto;min-width:min(100%,520px);font-size:12.5px}
+table.ref td.k{text-align:left;font-weight:600;white-space:nowrap}
+table.ref td.d{text-align:left;white-space:normal;color:var(--muted)}
+tr.dim{opacity:.45}
+tr.live td{background:var(--accent-soft)}
+tr.live td.k{color:var(--accent)}
+th.grp{background:var(--bg)}
+th.grp.act{background:var(--accent-soft);color:var(--accent)}
+td.act{background:var(--accent-soft)}
+.used{font-size:11px;color:var(--accent);font-weight:600;letter-spacing:.06em}
+
+.s-H{background:var(--hot-bg);color:var(--hot);font-weight:700}
+.s-O{background:var(--comfort-bg);color:var(--comfort);font-weight:700}
+.s-C{background:var(--cold-bg);color:var(--cold);font-weight:700}
+.ind{font-weight:700;color:var(--accent)}
+.tot{background:var(--accent-soft);font-weight:700}
+
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+.chip{border:1px solid var(--line);border-radius:8px;padding:8px 12px;min-width:112px;background:var(--bg)}
+.chip .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.chip .v{font-size:22px;font-weight:700;line-height:1.1}
+.chip .d{font-size:11px;color:var(--muted)}
+
+.rec-group{margin-bottom:14px}
+.rec-group h3{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);
+  margin:0 0 6px;font-weight:600}
+.rec{display:flex;gap:10px;align-items:flex-start;padding:7px 10px;border-radius:7px;
+  border:1px solid transparent;margin-bottom:3px}
+.rec.on{background:var(--comfort-bg);border-color:color-mix(in srgb,var(--comfort) 30%,transparent)}
+.rec .mark{width:18px;flex:0 0 18px;text-align:center;font-weight:700;color:var(--comfort)}
+.rec.off{color:var(--muted)}
+.rec .num{flex:0 0 22px;font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;padding-top:1px}
+.rec .txt{flex:1}
+.rec .cond{font-size:11px;color:var(--muted);margin-top:2px}
+.rec.on .txt{font-weight:600}
+
+.guide{background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 28%,transparent);
+  border-radius:8px;padding:11px 14px;font-size:13px;margin-bottom:14px;line-height:1.6}
+.guide b{color:var(--accent)}
+.guide ol,.guide ul{margin:6px 0 0;padding-left:20px}
+.guide li{margin-bottom:3px}
+.note{background:var(--warn-bg);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);
+  border-radius:8px;padding:10px 13px;font-size:13px;margin-bottom:12px}
+.note b{color:var(--warn)}
+.info{font-size:12px;color:var(--muted);margin-top:10px}
+details{margin-top:10px;font-size:13px}
+summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:13px}
+details .body{padding:10px 2px 0;color:var(--muted);line-height:1.65}
+details .body ul{padding-left:20px}
+#status{font-size:13px;color:var(--muted);margin-top:10px;min-height:18px}
+#status.ok{color:var(--comfort)}
+#status.err{color:var(--hot)}
+.legend{font-size:12px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;align-items:center}
+.legend i{font-style:normal;padding:1px 6px;border-radius:4px}
+.swatch{width:11px;height:11px;border-radius:2px;display:inline-block;vertical-align:-1px;margin-right:4px}
+.mlegend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.mlegend button{font-size:11px;padding:3px 9px;border-radius:20px}
+.mlegend button.off{opacity:.35}
+.charthead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+
+@media print{
+  body{background:#fff}
+  .noprint{display:none !important}
+  section.card{break-inside:avoid;border-color:#bbb;margin-bottom:12px}
+  .wrap{max-width:none;padding:0}
+  .rec.off{display:none}
+  tr.dim{opacity:1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>The Mahoney Tables
+    <small>Climatic data &rarr; design guidelines. Runs entirely in your browser; nothing is uploaded.</small>
+  </h1>
+  <div class="toolbar noprint">
+    <button id="btnSample">Load sample (Ahmedabad)</button>
+    <button id="btnClear">Clear</button>
+    <button id="btnSave">Save inputs</button>
+    <label class="filebtn">Load inputs<input type="file" id="fileJson" accept=".json"></label>
+    <button id="btnPrint" class="primary">Print / PDF</button>
+  </div>
+</header>
+
+<!-- ============ HOW TO USE ============ -->
+<section class="card">
+  <h2>How to use this</h2>
+  <div class="guide">
+    <b>The method in four steps.</b> Each step feeds the next, and every step below shows the reference
+    table it used, so you can check any result by hand.
+    <ol>
+      <li><b>Table 1</b> — put in twelve months of temperature, humidity and rainfall. The app works out
+          the monthly range, the annual figures, and each month's <i>humidity group</i>.</li>
+      <li><b>Table 2</b> — comfort limits are looked up from the annual mean temperature and the humidity
+          group, then compared with the monthly means to label each day and night
+          <b>H</b>ot, c<b>O</b>mfortable or <b>C</b>old.</li>
+      <li><b>Indicators</b> — six yes/no tests are applied to every month. The six totals (0&ndash;12) are
+          the entire input to the recommendations.</li>
+      <li><b>Tables 3 and 4</b> — the totals select sketch-design and detailed-design guidance.</li>
+    </ol>
+  </div>
+  <p class="sub" style="margin:0">
+    Start by dropping an EPW weather file below, or press <b>Load sample (Ahmedabad)</b> to see a
+    worked example, then type over the values.
+  </p>
+</section>
+
+<!-- ============ EPW ============ -->
+<section class="card noprint">
+  <h2>Step 1 &nbsp;Climate data source</h2>
+  <p class="sub">Drop an EPW weather file to fill the table automatically, or type the twelve monthly values in by hand below.</p>
+  <div id="drop">
+    <b>Drop an .epw file here</b> &nbsp;or click to choose<br>
+    <span style="font-size:12px">EnergyPlus Weather format &mdash; e.g. from climate.onebuilding.org or energyplus.net/weather</span>
+  </div>
+  <input type="file" id="fileEpw" accept=".epw,.txt,.csv">
+  <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end">
+    <div>
+      <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Humidity reading method</label>
+      <select id="rhMethod">
+        <option value="hours">Fixed hours — 07:00 (a.m.) and 15:00 (p.m.)</option>
+        <option value="extremes">Daily maximum and daily minimum RH</option>
+      </select>
+    </div>
+  </div>
+  <div id="status"></div>
+</section>
+
+<!-- ============ TABLE 1 ============ -->
+<section class="card">
+  <h2>Table 1 &nbsp;Air temperature, humidity, rain and wind</h2>
+  <p class="sub">Blue-outlined cells are editable. Paste a row of twelve values from Excel straight into the first cell of any row.</p>
+
+  <div class="meta">
+    <div><label for="locName">Location</label><input class="wide" id="locName" type="text" placeholder="City, country"></div>
+    <div><label for="locLat">Latitude</label><input class="wide" id="locLat" type="text" style="max-width:110px"></div>
+    <div><label for="locLon">Longitude</label><input class="wide" id="locLon" type="text" style="max-width:110px"></div>
+    <div><label for="locAlt">Altitude (m)</label><input class="wide" id="locAlt" type="text" style="max-width:110px"></div>
+  </div>
+
+  <div class="scroll"><table id="t1"></table></div>
+
+  <h4>Reference &mdash; humidity groups</h4>
+  <p class="sub">The <i>average</i> relative humidity row above decides each month's group. The group is
+     what selects the comfort limits in Table 2, so it drives everything downstream.</p>
+  <div class="scroll"><table class="ref" id="refHg"></table></div>
+  <p class="info">Boundaries are read as: 30% falls in group 2, 50% in group 2, 70% in group 3.
+     A month only leaves a group once it is strictly above the figure shown.</p>
+
+  <details>
+    <summary>What the other rows are for</summary>
+    <div class="body">
+      <ul>
+        <li><b>Monthly mean maximum / minimum</b> — the average of the daily highs and the average of the
+            daily lows for that month. Not the single hottest and coldest hour.</li>
+        <li><b>Monthly mean range</b> — the difference between them: how far the temperature swings between
+            day and night in a typical day of that month. Indicators H1 and A1 both test it against 10&nbsp;K.</li>
+        <li><b>AMT</b>, annual mean temperature — midway between the year's highest monthly mean maximum
+            and its lowest monthly mean minimum. It picks which of the three comfort tables applies.</li>
+        <li><b>AMR</b>, annual mean range — the difference between those same two figures. Reported for
+            reference; the indicators do not use it.</li>
+        <li><b>Rainfall</b> — monthly total in mm. Only indicator H3 uses it, at a threshold of 200&nbsp;mm.</li>
+        <li><b>Wind</b> — recorded for the designer's benefit. The Mahoney indicators make no use of it,
+            but it tells you which way to face the openings that Table 4 asks for.</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- ============ COMFORT LIMITS REFERENCE ============ -->
+<section class="card">
+  <h2>Reference &nbsp;Comfort limits</h2>
+  <p class="sub">This is the lookup table Table 2 reads. The highlighted block is the one your annual mean
+     temperature selects; the highlighted rows are the humidity groups your months actually fall into.</p>
+  <div class="scroll"><table id="refComfort"></table></div>
+  <div class="legend"><span id="comfortWhy"></span></div>
+  <details>
+    <summary>How a month is classified</summary>
+    <div class="body">
+      <p>Two comparisons are made for every month, using the limits from that month's humidity group:</p>
+      <ul>
+        <li><b>Day</b> — the monthly mean <i>maximum</i> is compared with the day limits.
+            Above the upper limit it is <b>H</b>; between the two it is <b>O</b>; below the lower limit it is <b>C</b>.</li>
+        <li><b>Night</b> — the monthly mean <i>minimum</i> is compared the same way with the night limits.</li>
+      </ul>
+      <p>A value sitting exactly on a limit counts as inside comfort.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ TABLE 2 ============ -->
+<section class="card">
+  <h2>Table 2 &nbsp;Diagnosis</h2>
+  <p class="sub">The limits from the reference table above, written out month by month, and the resulting
+     thermal stress.</p>
+  <div class="scroll"><table id="t2"></table></div>
+  <div class="legend">
+    <span><i class="s-H">H</i> hot &mdash; above comfort</span>
+    <span><i class="s-O">O</i> within comfort</span>
+    <span><i class="s-C">C</i> cold &mdash; below comfort</span>
+  </div>
+
+  <h2 style="margin-top:24px">Indicators</h2>
+  <p class="sub">A month scores an indicator when its diagnosis meets that indicator's condition.
+     The six totals are the only thing Tables 3 and 4 look at.</p>
+  <div class="scroll"><table id="t2i"></table></div>
+  <div class="chips" id="chips"></div>
+
+  <h4>Reference &mdash; what triggers each indicator</h4>
+  <p class="sub">Each row is one way of scoring. A blank cell means that column is not tested.
+     The last column shows which months matched, so you can trace any total back to its months.</p>
+  <div class="scroll"><table id="refInd"></table></div>
+</section>
+
+<!-- ============ CHART ============ -->
+<section class="card">
+  <div class="charthead">
+    <div>
+      <h2>Comfort profile</h2>
+      <p class="sub" style="margin:0">Monthly temperature against the comfort band for that month's humidity group.</p>
+    </div>
+    <div class="toolbar noprint">
+      <button class="seg on" data-mode="range" id="mRange">Range</button>
+      <button class="seg" data-mode="box" id="mBox">Box</button>
+      <button class="seg" data-mode="leaf" id="mLeaf">Leaf</button>
+    </div>
+  </div>
+  <div class="scroll" id="chart"></div>
+  <div class="legend" id="chartLegend"></div>
+  <details>
+    <summary>What the three views show</summary>
+    <div class="body">
+      <ul>
+        <li><b>Range</b> — the two numbers the Mahoney method actually uses: the monthly mean maximum and
+            the monthly mean minimum, joined by a line. Available from typed-in data alone.</li>
+        <li><b>Box</b> — a candlestick of every hour in the month: the box spans the middle half of all
+            hours (25th to 75th percentile), the whiskers reach the 5th and 95th, and the pale caps mark the
+            absolute extremes. The bar across the box is the median.</li>
+        <li><b>Leaf</b> — the same hours drawn as a distribution. The width at any height is how much of the
+            month sits at that temperature, so a fat waist means a steady month and a long thin leaf a
+            volatile one.</li>
+      </ul>
+      <p><b>Box and Leaf need an EPW file</b>, because they describe all 8,760 hours rather than twelve pairs
+         of numbers. They also legitimately reach beyond the Range view: a mean maximum is an average of the
+         daily highs, so individual hours run hotter and colder than it.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ PSYCHROMETRIC ============ -->
+<section class="card">
+  <div class="charthead">
+    <div>
+      <h2>Psychrometric chart</h2>
+      <p class="sub" style="margin:0">Temperature and humidity together, month by month, against the Mahoney comfort zone.</p>
+    </div>
+    <div class="toolbar noprint">
+      <button class="seg on" data-pmode="loop" id="pLoop">Daily loop</button>
+      <button class="seg" data-pmode="box" id="pBox">Range box</button>
+    </div>
+  </div>
+  <div class="scroll" id="psych"></div>
+  <div class="mlegend noprint" id="psychLegend"></div>
+  <p class="info" id="psychNote"></p>
+  <details>
+    <summary>How to read it, and how the comfort zone is built</summary>
+    <div class="body">
+      <ul>
+        <li>The horizontal axis is dry-bulb temperature; the vertical axis is <b>humidity ratio</b> — the
+            actual mass of water carried per kilogram of dry air. The curves sweeping up to the right are
+            lines of constant relative humidity, and the topmost is saturation, 100%. Air cannot exist above it.</li>
+        <li><b>Daily loop</b> draws each month's average day as a closed 24-hour path. It leans to the right
+            through the afternoon as the air heats and its relative humidity falls, and returns to the left
+            overnight. A tall loop means moisture is being added or removed across the day — usually rain or
+            sea breeze; a flat loop means the air simply heats and cools the same parcel of moisture.</li>
+        <li><b>Range box</b> replaces each loop with the 5th-to-95th percentile spread of all hours in the month.</li>
+        <li>The shaded zone is the Mahoney comfort zone. It is stepped, not a smooth blob, because the method
+            itself is stepped: each humidity group has its own temperature limits, so the band narrows as you
+            climb into more humid air. Its horizontal edges are the night lower limit and the day upper limit
+            for that group, taken from the comfort reference table above.</li>
+        <li>Months whose loops sit to the right of the zone need cooling and air movement; below and to the
+            left, warming. A loop sitting above the zone but at the right temperature is telling you the
+            problem is moisture, not heat.</li>
+      </ul>
+      <p>Humidity ratio is computed with the ASHRAE saturation-pressure formulation at a fixed
+         101.325&nbsp;kPa, so charts from different altitudes stay comparable.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ TABLE 3 ============ -->
+<section class="card">
+  <h2>Table 3 &nbsp;Recommended specifications</h2>
+  <p class="sub">Sketch-design guidance. Each line shows the indicator totals that would select it, so the
+     greyed-out lines tell you what a different climate would have called for.</p>
+  <div id="t3"></div>
+</section>
+
+<!-- ============ TABLE 4 ============ -->
+<section class="card">
+  <h2>Table 4 &nbsp;Detailed recommendations</h2>
+  <p class="sub">Element-level guidance for developed design.</p>
+  <div id="t4"></div>
+</section>
+
+<!-- ============ NOTES ============ -->
+<section class="card">
+  <h2>Method notes</h2>
+  <details>
+    <summary>How EPW data is reduced to the twelve monthly figures</summary>
+    <div class="body">
+      <ul>
+        <li><b>Monthly mean maximum / minimum temperature</b> — the daily maximum and minimum dry-bulb
+            temperature are found for each day, then averaged over each month. This is the definition the
+            Mahoney method assumes; it is not the same as the highest and lowest hour in the month.</li>
+        <li><b>Relative humidity</b> — the Mahoney tables want a morning (high) and afternoon (low) reading.
+            With <i>Fixed hours</i> the app averages the 07:00 and 15:00 values across each month; with
+            <i>Daily max/min</i> it averages each day's highest and lowest RH. The "average" row is the mean
+            of the two, exactly as the original method specifies, and it alone sets the humidity group.</li>
+        <li><b>Rainfall</b> — EPW field 34, liquid precipitation depth, summed per month. Many EPW files leave
+            this field missing (999) or all-zero; when that happens the app tells you and you must enter
+            monthly rainfall by hand from another source. Rainfall drives indicator H3 and every
+            rain-protection recommendation, so do not leave it wrong.</li>
+        <li><b>Wind</b> — the most and second-most frequent 16-point compass sector, counting only hours above
+            0.5&nbsp;m/s.</li>
+        <li><b>Hourly aggregates</b> — for the Box, Leaf and psychrometric views the app keeps a compact
+            summary of the hourly data: a 1&nbsp;K temperature histogram, a set of percentiles, and the mean
+            24-hour temperature and humidity-ratio profile for each month. The hourly file itself is never
+            stored or transmitted.</li>
+      </ul>
+    </div>
+  </details>
+  <details>
+    <summary>Differences from the supplied spreadsheet</summary>
+    <div class="body">
+      <p>This app follows the published Koenigsberger/Mahoney method. Four points where the spreadsheet
+         departs from it:</p>
+      <ul>
+        <li><b>Broken A3 reference.</b> In both Table 3 and Table 4 the A3 total reads
+            <code>='Table 2 Diagnosis'!TP27</code> — a typo for <code>P27</code>. A3 therefore always
+            evaluates as zero in the spreadsheet, silently corrupting the layout, opening-size and
+            sun-protection recommendations in any climate with cold months. Ahmedabad has A3&nbsp;=&nbsp;0,
+            so the error is invisible there.</li>
+        <li><b>Comfort limit typo.</b> Table 2 cell F4 (humidity group 1, annual mean over 20&nbsp;°C, night
+            lower limit) holds 14; the published value is 17. Rows 5–7 correctly hold 17.</li>
+        <li><b>Comfort band edges.</b> The spreadsheet classifies a month as cold when the mean equals the
+            lower comfort limit, because it tests <code>&gt;</code>. This app treats a value equal to a limit
+            as within comfort.</li>
+        <li><b>Annual mean temperature bands.</b> The spreadsheet sends an annual mean of exactly 15&nbsp;°C
+            to the "below 15" band; the published table puts 15–20 inclusive in the middle band, which is
+            what this app does.</li>
+      </ul>
+      <p>Everything else — the comfort table, all six indicator rules, and all thirty-three recommendation
+         rules — matches the spreadsheet.</p>
+    </div>
+  </details>
+</section>
+
+<p class="info">Mahoney Tables after Carl Mahoney, John Martin Evans and Otto Königsberger,
+   <i>Climate and House Design</i> (UN, 1971) and Koenigsberger et al.,
+   <i>Manual of Tropical Housing and Building</i>.</p>
+
+</div>
+
+<script>
+"use strict";
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const M0 = () => new Array(12).fill(null);
+
+/* Comfort limits — [day low, day high, night low, night high] by humidity group 1..4 */
+const COMFORT = {
+  over20 : [[26,34,17,25],[25,31,17,24],[23,29,17,23],[22,27,17,21]],
+  mid    : [[23,32,14,23],[22,30,14,22],[21,28,14,21],[20,25,14,20]],
+  below15: [[21,30,12,21],[20,27,12,20],[19,26,12,19],[18,24,12,18]]
+};
+const BANDS = [["over20","AMT over 20 °C"],["mid","AMT 15–20 °C"],["below15","AMT below 15 °C"]];
+
+const state = {
+  loc:{name:"",lat:"",lon:"",alt:""},
+  tmax:M0(), tmin:M0(), rhAm:M0(), rhPm:M0(), rhAvg:M0(),
+  rain:M0(), windP:new Array(12).fill(""), windS:new Array(12).fill(""),
+  hourly:null
+};
+let chartMode = "range";
+let psychMode = "loop";
+let psychOnly = null;          // null = all months, else month index
+
+/* =====================================================================
+   PSYCHROMETRICS  (ASHRAE Fundamentals, saturation pressure over water/ice)
+   ===================================================================== */
+const P_ATM = 101325;
+function pws(tC){
+  const T = tC + 273.15;
+  if(tC < 0){
+    return Math.exp(-5.6745359e3/T + 6.3925247 - 9.677843e-3*T + 6.2215701e-7*T*T
+      + 2.0747825e-9*T*T*T - 9.484024e-13*T*T*T*T + 4.1635019*Math.log(T));
+  }
+  return Math.exp(-5.8002206e3/T + 1.3914993 - 4.8640239e-2*T + 4.1764768e-5*T*T
+    - 1.4452093e-8*T*T*T + 6.5459673*Math.log(T));
+}
+/* humidity ratio in g of water per kg of dry air */
+function humRatio(tC, rhPct, p){
+  p = p || P_ATM;
+  const pw = Math.min((rhPct/100)*pws(tC), p*0.995);
+  return 621.945 * pw / (p - pw);
+}
+
+/* =====================================================================
+   INDICATOR RULES — one entry per way of scoring
+   ===================================================================== */
+const INDRULES = [
+ {ind:"H1", meaning:"Air movement essential",      day:"H", night:"", rain:"",           hg:"4",       rng:"",
+  test:(m)=> m.day==="H" && m.hg===4},
+ {ind:"H1", meaning:"",                            day:"H", night:"", rain:"",           hg:"2, 3",    rng:"less than 10",
+  test:(m)=> m.day==="H" && (m.hg===2||m.hg===3) && m.range<10},
+ {ind:"H2", meaning:"Air movement desirable",      day:"O", night:"", rain:"",           hg:"4",       rng:"",
+  test:(m)=> m.day==="O" && m.hg===4},
+ {ind:"H3", meaning:"Rain protection necessary",   day:"",  night:"", rain:"over 200 mm",hg:"",        rng:"",
+  test:(m,i)=> state.rain[i]!==null && state.rain[i]>200, needsStress:false},
+ {ind:"A1", meaning:"Thermal capacity necessary",  day:"",  night:"", rain:"",           hg:"1, 2, 3", rng:"more than 10",
+  test:(m)=> (m.hg===1||m.hg===2||m.hg===3) && m.range>10},
+ {ind:"A2", meaning:"Out-door sleeping desirable", day:"",  night:"H",rain:"",           hg:"1, 2",    rng:"",
+  test:(m)=> m.night==="H" && (m.hg===1||m.hg===2)},
+ {ind:"A2", meaning:"",                            day:"H", night:"O",rain:"",           hg:"1, 2",    rng:"more than 10",
+  test:(m)=> m.day==="H" && m.night==="O" && (m.hg===1||m.hg===2) && m.range>10},
+ {ind:"A3", meaning:"Protection from cold",        day:"C", night:"", rain:"",           hg:"",        rng:"",
+  test:(m)=> m.day==="C"}
+];
+const INDMETA = [
+  ["H1","Humid: H1","Air movement essential"],
+  ["H2","H2","Air movement desirable"],
+  ["H3","H3","Rain protection necessary"],
+  ["A1","Arid: A1","Thermal capacity necessary"],
+  ["A2","A2","Out-door sleeping desirable"],
+  ["A3","A3","Protection from cold"]
+];
+
+/* =====================================================================
+   COMPUTE
+   ===================================================================== */
+function computeAll(){
+  const r = {months:[], totals:{H1:0,H2:0,H3:0,A1:0,A2:0,A3:0},
+             ruleHits: INDRULES.map(()=>[])};
+
+  const tmaxV = state.tmax.filter(v=>v!==null);
+  const tminV = state.tmin.filter(v=>v!==null);
+  r.high = tmaxV.length ? Math.max(...tmaxV) : null;
+  r.low  = tminV.length ? Math.min(...tminV) : null;
+  r.amt  = (r.high!==null && r.low!==null) ? (r.high+r.low)/2 : null;
+  r.amr  = (r.high!==null && r.low!==null) ? (r.high-r.low)   : null;
+
+  r.bandKey = r.amt===null ? null : (r.amt>20 ? "over20" : (r.amt>=15 ? "mid" : "below15"));
+  r.bandName = r.bandKey ? BANDS.find(b=>b[0]===r.bandKey)[1] : "—";
+  const band = r.bandKey ? COMFORT[r.bandKey] : null;
+  r.hgUsed = new Set();
+
+  for(let i=0;i<12;i++){
+    const m = {};
+    const tx = state.tmax[i], tn = state.tmin[i];
+    m.range = (tx!==null && tn!==null) ? tx-tn : null;
+
+    const avg = state.rhAvg[i];
+    m.hg = avg===null ? null : (avg>70?4:(avg>50?3:(avg>30?2:1)));
+    if(m.hg) r.hgUsed.add(m.hg);
+
+    if(band && m.hg){
+      const L = band[m.hg-1];
+      m.dayLow=L[0]; m.dayHigh=L[1]; m.nightLow=L[2]; m.nightHigh=L[3];
+      m.day   = tx===null ? null : (tx>m.dayHigh   ? "H" : (tx>=m.dayLow   ? "O" : "C"));
+      m.night = tn===null ? null : (tn>m.nightHigh ? "H" : (tn>=m.nightLow ? "O" : "C"));
+    }
+
+    const ready = !!(m.day && m.night && m.hg!==null && m.range!==null);
+    m.ind = {H1:false,H2:false,H3:false,A1:false,A2:false,A3:false};
+    INDRULES.forEach((rule,ri)=>{
+      if(rule.needsStress!==false && !ready) return;   // H3 alone needs no diagnosis
+      if(rule.test(m,i)){ m.ind[rule.ind]=true; r.ruleHits[ri].push(i); }
+    });
+
+    for(const k in r.totals) if(m.ind[k]) r.totals[k]++;
+    r.months.push(m);
+  }
+  return r;
+}
+
+/* =====================================================================
+   RECOMMENDATION RULES
+   ===================================================================== */
+const R = (k,a,b)=>[k,a,b];
+
+const TABLE3 = [
+ {g:"Layout", n:1, t:"Orientation north and south (long axis east–west)",
+  or:[[R("A1",0,10)],[R("A1",11,12),R("A3",5,12)]]},
+ {g:"Layout", n:2, t:"Compact courtyard planning", or:[[R("A1",11,12),R("A3",0,4)]]},
+
+ {g:"Spacing", n:3, t:"Open spacing for breeze penetration", or:[[R("H1",11,12)]]},
+ {g:"Spacing", n:4, t:"As 3, but protection from hot and cold wind", or:[[R("H1",2,10)]]},
+ {g:"Spacing", n:5, t:"Compact layout of estates", or:[[R("H1",0,1)]]},
+
+ {g:"Air movement", n:6, t:"Rooms single banked, permanent provision for air movement",
+  or:[[R("H1",3,12)],[R("H1",1,2),R("A1",0,5)]]},
+ {g:"Air movement", n:7, t:"Double banked rooms, temporary provision for air movement",
+  or:[[R("H1",1,2),R("A1",6,12)],[R("H1",0,0),R("H2",2,12)]]},
+ {g:"Air movement", n:8, t:"No air movement requirement", or:[[R("H1",0,0),R("H2",0,1)]]},
+
+ {g:"Openings", n:9,  t:"Large openings, 40–80%",      or:[[R("A1",0,1),R("A3",0,0)]]},
+ {g:"Openings", n:10, t:"Very small openings, 10–20%", or:[[R("A1",11,12),R("A3",0,1)]]},
+ {g:"Openings", n:11, t:"Medium openings, 20–40%",     or:"otherwise", except:[9,10]},
+
+ {g:"Walls", n:12, t:"Light walls, short time-lag",       or:[[R("A1",0,2)]]},
+ {g:"Walls", n:13, t:"Heavy external and internal walls", or:[[R("A1",3,12)]]},
+
+ {g:"Roofs", n:14, t:"Light, insulated roofs",         or:[[R("A1",0,5)]]},
+ {g:"Roofs", n:15, t:"Heavy roofs, over 8 h time-lag", or:[[R("A1",6,12)]]},
+
+ {g:"Out-door sleeping", n:16, t:"Space for out-door sleeping required", or:[[R("A2",2,12)]]},
+ {g:"Rain protection",   n:17, t:"Protection from heavy rain necessary", or:[[R("H3",3,12)]]}
+];
+
+const TABLE4 = [
+ {g:"Size of openings", n:1, t:"Large: 40–80%",     or:[[R("A1",0,1),R("A3",0,0)]]},
+ {g:"Size of openings", n:2, t:"Medium: 25–40%",    or:[[R("A1",2,5)],[R("A3",1,12)]]},
+ {g:"Size of openings", n:3, t:"Small: 15–25%",     or:[[R("A1",6,10)]]},
+ {g:"Size of openings", n:4, t:"Very small: 10–20%",or:[[R("A1",11,12),R("A3",0,3)]]},
+ {g:"Size of openings", n:5, t:"Medium: 25–40%",    or:[[R("A1",11,12),R("A3",4,12)]]},
+
+ {g:"Position of openings", n:6, t:"In north and south walls at body height on windward side",
+  or:[[R("H1",3,12)],[R("H1",1,2),R("A1",0,5)]]},
+ {g:"Position of openings", n:7, t:"As above, openings also in internal walls",
+  or:[[R("H1",1,2),R("A1",6,12)],[R("H1",0,0),R("H2",2,12)]]},
+
+ {g:"Protection of openings", n:8, t:"Exclude direct sunlight",      or:[[R("A3",0,2)]]},
+ {g:"Protection of openings", n:9, t:"Provide protection from rain", or:[[R("H3",2,12)]]},
+
+ {g:"Walls and floors", n:10, t:"Light, low thermal capacity", or:[[R("A1",0,2)]]},
+ {g:"Walls and floors", n:11, t:"Heavy, over 8 h time-lag",    or:[[R("A1",3,12)]]},
+
+ {g:"Roofs", n:12, t:"Light, reflective surface, cavity", or:[[R("H1",10,12),R("A1",0,2)]]},
+ {g:"Roofs", n:13, t:"Light, well insulated",             or:[[R("H1",10,12),R("A1",3,12)],[R("H1",0,9),R("A1",0,5)]]},
+ {g:"Roofs", n:14, t:"Heavy, over 8 h time-lag",          or:[[R("H1",0,9),R("A1",6,12)]]},
+
+ {g:"External features", n:15, t:"Space for out-door sleeping", or:[[R("A2",1,12)]]},
+ {g:"External features", n:16, t:"Adequate rainwater drainage", or:[[R("H3",1,12)]]}
+];
+
+function ruleHolds(rule, tot){
+  if(rule.or==="otherwise") return null;
+  return rule.or.some(alt => alt.every(([k,a,b]) => tot[k]>=a && tot[k]<=b));
+}
+function condText(rule){
+  if(rule.or==="otherwise") return "any other condition";
+  const multi = rule.or.length>1;
+  return rule.or.map(alt => {
+    const s = alt.map(([k,a,b]) => a===b ? k+" = "+a : k+" "+a+"–"+b).join(" and ");
+    return (multi && alt.length>1) ? "("+s+")" : s;
+  }).join(" &nbsp;or&nbsp; ");
+}
+function evaluate(list, tot){
+  const out = list.map(rule => ({...rule, on: ruleHolds(rule, tot)}));
+  out.forEach(o=>{ if(o.on===null) o.on = !o.except.some(n => out.find(x=>x.n===n).on); });
+  return out;
+}
+
+/* =====================================================================
+   RENDER HELPERS
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const fmt = (v,d=0) => v===null||v===undefined||Number.isNaN(v) ? "" : (+v).toFixed(d).replace(/\.0+$/,"");
+const monLetters = arr => arr.map(i=>MONTHS[i].slice(0,1)).join(" ");
+const monNames  = arr => arr.map(i=>MONTHS[i]).join(", ");
+
+function monthHeader(first, last){
+  return "<tr><th class='lab'>"+first+"</th>" +
+    MONTHS.map(m=>"<th>"+m[0]+"</th>").join("") +
+    "<th style='width:12px;border:0;background:none'></th><th>"+last+"</th></tr>";
+}
+function numRow(label, key, extraCell){
+  let h = "<tr><td class='lab'>"+label+"</td>";
+  for(let i=0;i<12;i++){
+    h += "<td><input class='cell' data-key='"+key+"' data-i='"+i+"' inputmode='decimal' " +
+         "value='"+(state[key][i]===null?"":state[key][i])+"'></td>";
+  }
+  h += "<td style='border:0;background:none'></td>" + (extraCell||"<td class='res'></td>") + "</tr>";
+  return h;
+}
+function txtRow(label, key){
+  let h = "<tr><td class='lab'>"+label+"</td>";
+  for(let i=0;i<12;i++){
+    h += "<td><input class='cell txt' data-key='"+key+"' data-i='"+i+"' value='"+(state[key][i]||"")+"'></td>";
+  }
+  h += "<td style='border:0;background:none'></td><td class='res'></td></tr>";
+  return h;
+}
+function resRow(label, vals, cls, extraCell){
+  let h = "<tr><td class='lab'>"+label+"</td>";
+  for(let i=0;i<12;i++){
+    const v = vals[i];
+    const c = typeof cls==="function" ? cls(v,i) : (cls||"res");
+    h += "<td class='"+c+"'>"+(v===null||v===undefined?"":v)+"</td>";
+  }
+  h += "<td style='border:0;background:none'></td>" + (extraCell||"<td class='res'></td>") + "</tr>";
+  return h;
+}
+const ind = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+
+/* =====================================================================
+   MAIN RENDER
+   ===================================================================== */
+function render(){
+  const r = computeAll();
+
+  /* ---------- Table 1 ---------- */
+  let h = "";
+  h += monthHeader("Air temperature, °C","");
+  h += numRow("Monthly mean max.","tmax","<td class='hi'>High "+fmt(r.high,1)+"</td>");
+  h += numRow("Monthly mean min.","tmin","<td class='hi'>Low "+fmt(r.low,1)+"</td>");
+  h += resRow("Monthly mean range", r.months.map(m=>fmt(m.range,1)), "res",
+        "<td class='hi'>AMR "+fmt(r.amr,1)+"</td>");
+  h += "<tr><td class='lab' style='border:0'></td><td colspan='12' style='border:0'></td>" +
+       "<td style='border:0'></td><td class='hi'>AMT "+fmt(r.amt,1)+"</td></tr>";
+
+  h += "<tr class='spacer'><td colspan='15'></td></tr>";
+  h += monthHeader("Relative humidity, %","");
+  h += numRow("Monthly mean max. a.m.","rhAm");
+  h += numRow("Monthly mean min. p.m.","rhPm");
+  h += numRow("Average","rhAvg");
+  h += resRow("Humidity group", r.months.map(m=>m.hg===null?"":m.hg), "hi");
+
+  h += "<tr class='spacer'><td colspan='15'></td></tr>";
+  h += monthHeader("Rain and wind","");
+  h += numRow("Rainfall, mm","rain",
+        "<td class='hi'>Total "+fmt(state.rain.reduce((a,b)=>a+(b||0),0),0)+"</td>");
+  h += txtRow("Wind, prevailing","windP");
+  h += txtRow("Wind, secondary","windS");
+  $("t1").innerHTML = h;
+
+  /* ---------- humidity group reference ---------- */
+  const HGDEF = [[1,"below 30%"],[2,"30 – 50%"],[3,"50 – 70%"],[4,"above 70%"]];
+  h = "<tr><th>Humidity group</th><th>Average relative humidity</th><th class='lab'>Months in this group</th></tr>";
+  for(const [g,d] of HGDEF){
+    const ms = r.months.map((m,i)=>m.hg===g?i:-1).filter(i=>i>=0);
+    h += "<tr class='"+(ms.length?"live":"dim")+"'><td class='k'>"+g+"</td><td>"+d+"</td>" +
+         "<td class='d'>"+(ms.length? monNames(ms) : "—")+"</td></tr>";
+  }
+  $("refHg").innerHTML = h;
+
+  /* ---------- comfort limits reference ---------- */
+  h = "<tr><th rowspan='2'>Humidity<br>group</th>" +
+      BANDS.map(b=>"<th class='grp"+(b[0]===r.bandKey?" act":"")+"' colspan='4'>"+b[1]+"</th>").join("") +
+      "<th rowspan='2' class='lab'>Months using this row</th></tr><tr>" +
+      BANDS.map(b=>{
+        const a = b[0]===r.bandKey ? " act" : "";
+        return "<th class='grp"+a+"'>Day<br>lower</th><th class='grp"+a+"'>Day<br>upper</th>" +
+               "<th class='grp"+a+"'>Night<br>lower</th><th class='grp"+a+"'>Night<br>upper</th>";
+      }).join("") + "</tr>";
+  for(let g=1; g<=4; g++){
+    const live = r.hgUsed.has(g);
+    const ms = r.months.map((m,i)=>m.hg===g?i:-1).filter(i=>i>=0);
+    h += "<tr class='"+(live?"live":"dim")+"'><td class='hi'>"+g+"</td>";
+    for(const [key] of BANDS){
+      const L = COMFORT[key][g-1], a = key===r.bandKey ? " act" : "";
+      h += L.map(v=>"<td class='"+(a?"act":"res")+"'>"+v+"</td>").join("");
+    }
+    h += "<td class='d'>"+(live && r.bandKey ? monNames(ms) : "—")+"</td></tr>";
+  }
+  $("refComfort").innerHTML = h;
+  $("comfortWhy").innerHTML = r.amt===null
+    ? "Enter temperatures to select a block."
+    : "Annual mean temperature is <b>"+fmt(r.amt,1)+"&nbsp;°C</b>, so the <b>"+r.bandName+
+      "</b> block applies to every month of the year.";
+
+  /* ---------- Table 2 ---------- */
+  const stressCls = v => v ? "s-"+v : "res";
+  h = monthHeader("Comfort limits &mdash; "+r.bandName,"AMT");
+  h += resRow("Monthly mean max.", state.tmax.map(v=>fmt(v,1)), "res",
+        "<td class='hi'>"+fmt(r.amt,1)+"</td>");
+  h += resRow("Day comfort: upper", r.months.map(m=>m.dayHigh??""));
+  h += resRow(ind+"lower",          r.months.map(m=>m.dayLow??""));
+  h += resRow("Monthly mean min.",  state.tmin.map(v=>fmt(v,1)));
+  h += resRow("Night comfort: upper", r.months.map(m=>m.nightHigh??""));
+  h += resRow(ind+"lower",            r.months.map(m=>m.nightLow??""));
+  h += resRow("Thermal stress: day", r.months.map(m=>m.day??""), stressCls);
+  h += resRow(ind+"night",           r.months.map(m=>m.night??""), stressCls);
+  $("t2").innerHTML = h;
+
+  /* ---------- indicators ---------- */
+  h = monthHeader("Indicators","Total");
+  for(const [k,lab,meaning] of INDMETA){
+    h += "<tr><td class='lab' title='"+meaning+"'>"+lab+"</td>";
+    for(let i=0;i<12;i++)
+      h += "<td class='"+(r.months[i].ind[k]?"ind":"res")+"'>"+(r.months[i].ind[k]?"1":"")+"</td>";
+    h += "<td style='border:0;background:none'></td><td class='tot'>"+r.totals[k]+"</td></tr>";
+  }
+  $("t2i").innerHTML = h;
+
+  $("chips").innerHTML = INDMETA.map(([k,lab,meaning]) =>
+    "<div class='chip'><div class='k'>"+k+"</div><div class='v'>"+r.totals[k]+"</div><div class='d'>"+meaning+"</div></div>"
+  ).join("");
+
+  /* ---------- indicator explainer ---------- */
+  h = "<tr><th class='lab'>Meaning</th><th>Indicator</th>" +
+      "<th>Thermal stress<br>day</th><th>Thermal stress<br>night</th>" +
+      "<th>Rainfall</th><th>Humidity<br>group</th><th>Monthly mean<br>range, K</th>" +
+      "<th class='lab'>Months matching</th></tr>";
+  INDRULES.forEach((rule,ri)=>{
+    const hits = r.ruleHits[ri];
+    const cell = v => v==="" ? "<td class='res'>—</td>" :
+      (["H","O","C"].includes(v) ? "<td class='s-"+v+"'>"+v+"</td>" : "<td>"+v+"</td>");
+    h += "<tr class='"+(hits.length?"live":"dim")+"'>" +
+         "<td class='lab'>"+(rule.meaning||"<span style='color:var(--muted)'>&#8627; or</span>")+"</td>" +
+         "<td class='hi'>"+rule.ind+"</td>" +
+         cell(rule.day) + cell(rule.night) + cell(rule.rain) + cell(rule.hg) + cell(rule.rng) +
+         "<td class='d'>"+(hits.length? "<span class='used'>"+hits.length+"</span> &nbsp;"+monNames(hits) : "—")+"</td></tr>";
+  });
+  $("refInd").innerHTML = h;
+
+  /* ---------- recommendations ---------- */
+  $("t3").innerHTML = renderRecs(evaluate(TABLE3, r.totals));
+  $("t4").innerHTML = renderRecs(evaluate(TABLE4, r.totals));
+
+  updateChartButtons();
+  drawChart(r);
+  drawPsych(r);
+  save();
+}
+
+function renderRecs(list){
+  let h="", g=null;
+  for(const x of list){
+    if(x.g!==g){ if(g!==null) h+="</div>"; h += "<div class='rec-group'><h3>"+x.g+"</h3>"; g=x.g; }
+    h += "<div class='rec "+(x.on?"on":"off")+"'>" +
+           "<div class='mark'>"+(x.on?"&#10003;":"&middot;")+"</div>" +
+           "<div class='num'>"+x.n+"</div>" +
+           "<div class='txt'>"+x.t+"<div class='cond'>"+condText(x)+"</div></div>" +
+         "</div>";
+  }
+  return h+"</div>";
+}
+
+/* =====================================================================
+   COMFORT PROFILE CHART — range / box / leaf
+   ===================================================================== */
+function updateChartButtons(){
+  const has = !!state.hourly;
+  ["mBox","mLeaf"].forEach(id=>{
+    $(id).disabled = !has;
+    $(id).title = has ? "" : "Load an EPW file — this view needs the hourly data";
+  });
+  if(!has && chartMode!=="range") chartMode = "range";
+  document.querySelectorAll("[data-mode]").forEach(b=>b.classList.toggle("on", b.dataset.mode===chartMode));
+}
+
+function drawChart(r){
+  const W=880,H=300,PL=44,PR=16,PT=14,PB=30;
+  const hr = state.hourly;
+  const vals=[];
+  state.tmax.forEach(v=>v!==null&&vals.push(v));
+  state.tmin.forEach(v=>v!==null&&vals.push(v));
+  r.months.forEach(m=>{ if(m.dayHigh!==undefined) vals.push(m.dayHigh,m.nightLow); });
+  if(chartMode!=="range" && hr) hr.months.forEach(m=>{ if(m.n) vals.push(m.tp[0],m.tp[6]); });
+
+  if(!vals.length){
+    $("chart").innerHTML="<p class='sub'>Enter temperature and humidity data to see the profile.</p>";
+    $("chartLegend").innerHTML=""; return;
+  }
+
+  const lo=Math.floor(Math.min(...vals)/5)*5-2, hi=Math.ceil(Math.max(...vals)/5)*5+2;
+  const y = v => PT + (hi-v)/(hi-lo)*(H-PT-PB);
+  const colW = (W-PL-PR)/12;
+  const cx = i => PL + colW*(i+0.5);
+
+  let s = "<svg viewBox='0 0 "+W+" "+H+"' width='100%' style='min-width:620px;display:block' font-family='inherit'>";
+  for(let t=Math.ceil(lo/5)*5;t<=hi;t+=5){
+    s += "<line x1='"+PL+"' x2='"+(W-PR)+"' y1='"+y(t)+"' y2='"+y(t)+"' stroke='var(--line)'/>" +
+         "<text x='"+(PL-8)+"' y='"+(y(t)+4)+"' font-size='11' fill='var(--muted)' text-anchor='end'>"+t+"</text>";
+  }
+
+  for(let i=0;i<12;i++){
+    const m=r.months[i];
+    /* comfort band behind every mode */
+    if(m.dayHigh!==undefined){
+      s += "<rect x='"+(cx(i)-colW*0.42)+"' y='"+y(m.dayHigh)+"' width='"+(colW*0.84)+
+           "' height='"+(y(m.nightLow)-y(m.dayHigh))+"' fill='var(--comfort)' opacity='.13'/>";
+      s += "<line x1='"+(cx(i)-colW*0.42)+"' x2='"+(cx(i)+colW*0.42)+"' y1='"+y(m.dayLow)+
+           "' y2='"+y(m.dayLow)+"' stroke='var(--comfort)' opacity='.4' stroke-dasharray='3 3'/>";
+      s += "<line x1='"+(cx(i)-colW*0.42)+"' x2='"+(cx(i)+colW*0.42)+"' y1='"+y(m.nightHigh)+
+           "' y2='"+y(m.nightHigh)+"' stroke='var(--comfort)' opacity='.4' stroke-dasharray='3 3'/>";
+    }
+    const col = st => st==="H"?"var(--hot)":st==="C"?"var(--cold)":"var(--comfort)";
+
+    if(chartMode==="range"){
+      const tx=state.tmax[i], tn=state.tmin[i];
+      if(tx!==null&&tn!==null){
+        s += "<line x1='"+cx(i)+"' x2='"+cx(i)+"' y1='"+y(tx)+"' y2='"+y(tn)+
+             "' stroke='var(--ink)' stroke-width='2' opacity='.55'/>";
+        s += "<circle cx='"+cx(i)+"' cy='"+y(tx)+"' r='4.5' fill='"+col(m.day)+"'/>";
+        s += "<circle cx='"+cx(i)+"' cy='"+y(tn)+"' r='4.5' fill='"+col(m.night)+"'/>";
+      }
+    } else if(hr && hr.months[i].n){
+      const p = hr.months[i].tp;   // p0 p5 p25 p50 p75 p95 p100
+      if(chartMode==="box"){
+        const bw = colW*0.34;
+        s += "<line x1='"+cx(i)+"' x2='"+cx(i)+"' y1='"+y(p[1])+"' y2='"+y(p[5])+
+             "' stroke='var(--ink)' stroke-width='1.5' opacity='.6'/>";
+        [[p[0],'.30'],[p[6],'.30']].forEach(([v,o])=>{
+          s += "<line x1='"+(cx(i)-bw*0.4)+"' x2='"+(cx(i)+bw*0.4)+"' y1='"+y(v)+"' y2='"+y(v)+
+               "' stroke='var(--ink)' opacity='"+o+"' stroke-width='1.5'/>";
+        });
+        s += "<line x1='"+cx(i)+"' x2='"+cx(i)+"' y1='"+y(p[0])+"' y2='"+y(p[1])+
+             "' stroke='var(--ink)' stroke-width='1' opacity='.22'/>";
+        s += "<line x1='"+cx(i)+"' x2='"+cx(i)+"' y1='"+y(p[5])+"' y2='"+y(p[6])+
+             "' stroke='var(--ink)' stroke-width='1' opacity='.22'/>";
+        s += "<rect x='"+(cx(i)-bw)+"' y='"+y(p[4])+"' width='"+(2*bw)+"' height='"+Math.max(1,y(p[2])-y(p[4]))+
+             "' fill='"+col(m.day)+"' opacity='.32' stroke='"+col(m.day)+"' stroke-width='1.2'/>";
+        s += "<line x1='"+(cx(i)-bw)+"' x2='"+(cx(i)+bw)+"' y1='"+y(p[3])+"' y2='"+y(p[3])+
+             "' stroke='var(--ink)' stroke-width='2'/>";
+      } else {
+        /* leaf — symmetric density */
+        const mo = hr.months[i], maxc = Math.max(...mo.hist), half = colW*0.44;
+        if(maxc>0){
+          /* trim to this month's own span, plus one empty bin each side for a clean taper */
+          let b0=0, b1=mo.hist.length-1;
+          while(b0<b1 && mo.hist[b0]===0) b0++;
+          while(b1>b0 && mo.hist[b1]===0) b1--;
+          b0=Math.max(0,b0-1); b1=Math.min(mo.hist.length-1,b1+1);
+          const pts=[], back=[];
+          for(let b=b0;b<=b1;b++){
+            const t = hr.tLo + b*hr.tBin + hr.tBin/2;
+            if(t<lo-2||t>hi+2) continue;
+            const w = half*Math.sqrt(mo.hist[b]/maxc);   // sqrt keeps thin tails visible
+            pts.push([cx(i)-w, y(t)]);
+            back.push([cx(i)+w, y(t)]);
+          }
+          if(pts.length){
+            const d = "M"+pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join("L") +
+                      "L"+back.reverse().map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join("L")+"Z";
+            s += "<path d='"+d+"' fill='"+col(m.day)+"' opacity='.30' stroke='"+col(m.day)+
+                 "' stroke-width='1.1' stroke-linejoin='round'/>";
+          }
+        }
+        s += "<line x1='"+(cx(i)-half*0.55)+"' x2='"+(cx(i)+half*0.55)+"' y1='"+y(p[3])+"' y2='"+y(p[3])+
+             "' stroke='var(--ink)' stroke-width='1.8'/>";
+      }
+    }
+    s += "<text x='"+cx(i)+"' y='"+(H-9)+"' font-size='11' fill='var(--muted)' text-anchor='middle'>"+MONTHS[i]+"</text>";
+  }
+  s += "<text x='"+PL+"' y='"+(H-9)+"' font-size='11' fill='var(--muted)' text-anchor='end'>°C</text></svg>";
+  $("chart").innerHTML = s;
+
+  const band = "<span><span class='swatch' style='background:var(--comfort);opacity:.35'></span>comfort band for that month</span>";
+  const dots = "<span>colour shows day-time stress: <i class='s-H'>H</i> <i class='s-O'>O</i> <i class='s-C'>C</i></span>";
+  $("chartLegend").innerHTML =
+    chartMode==="range" ? band+dots+"<span>line spans monthly mean minimum to mean maximum</span>" :
+    chartMode==="box"   ? band+dots+"<span>box 25–75%, whiskers 5–95%, caps absolute extremes, bar median &mdash; all hours</span>"
+                        : band+dots+"<span>width is how many hours sat at that temperature; bar is the median &mdash; all hours</span>";
+}
+
+document.querySelectorAll("[data-mode]").forEach(b=>{
+  b.onclick = ()=>{ chartMode = b.dataset.mode; render(); };
+});
+
+/* =====================================================================
+   PSYCHROMETRIC CHART
+   ===================================================================== */
+const monHue = i => (i*30 + 210) % 360;
+const monCol = i => "hsl("+monHue(i)+" 72% var(--lift))";
+
+function drawPsych(r){
+  const W=900,H=520,PL=52,PR=118,PT=16,PB=42;
+  const hr = state.hourly;
+
+  /* gather the points we must fit */
+  const pts=[];      // {t,w}
+  const perMonth=[]; // drawing data per month
+  for(let i=0;i<12;i++){
+    let d=null;
+    if(hr && hr.months[i].n){
+      const mo=hr.months[i];
+      d = {kind: psychMode==="loop" ? "loop":"box",
+           loop: mo.dT.map((t,k)=>({t, w:mo.dW[k]})),
+           box:{t0:mo.tp[1], t1:mo.tp[5], w0:mo.wp[0], w1:mo.wp[1]},
+           mean:{t:mo.tMean, w:mo.wMean}};
+    } else {
+      const tx=state.tmax[i], tn=state.tmin[i];
+      if(tx===null||tn===null) { perMonth.push(null); continue; }
+      const am=state.rhAm[i], pm=state.rhPm[i], av=state.rhAvg[i];
+      if(am!==null && pm!==null){
+        d={kind:"seg", a:{t:tn,w:humRatio(tn,am)}, b:{t:tx,w:humRatio(tx,pm)}};
+      } else if(av!==null){
+        const w = humRatio((tx+tn)/2, av);
+        d={kind:"seg", a:{t:tn,w}, b:{t:tx,w}};
+      } else { perMonth.push(null); continue; }
+      d.mean={t:(tx+tn)/2, w:(d.a.w+d.b.w)/2};
+    }
+    perMonth.push(d);
+    if(d.kind==="loop") d.loop.forEach(p=>pts.push(p));
+    else if(d.kind==="box"){ pts.push({t:d.box.t0,w:d.box.w0},{t:d.box.t1,w:d.box.w1}); }
+    else pts.push(d.a,d.b);
+  }
+
+  /* comfort zone bands: [rhLo, rhHi, hg] */
+  const ZONES = [[0,30,1],[30,50,2],[50,70,3],[70,100,4]];
+  const band = r.bandKey ? COMFORT[r.bandKey] : null;
+  if(band) ZONES.forEach(([,,g])=>{
+    const L=band[g-1];
+    pts.push({t:L[2], w:humRatio(L[2],0)},{t:L[1], w:humRatio(L[1],100)});
+  });
+
+  if(!pts.length){
+    $("psych").innerHTML="<p class='sub'>Enter temperature and humidity data to see the chart.</p>";
+    $("psychLegend").innerHTML=""; $("psychNote").textContent=""; return;
+  }
+
+  let tLo=Math.floor(Math.min(...pts.map(p=>p.t))/5)*5-3;
+  let tHi=Math.ceil (Math.max(...pts.map(p=>p.t))/5)*5+3;
+  let wHi=Math.ceil (Math.max(...pts.map(p=>p.w))/5)*5+3;
+  wHi=Math.max(wHi,12);
+  const x = t => PL + (t-tLo)/(tHi-tLo)*(W-PL-PR);
+  const y = w => PT + (wHi-w)/wHi*(H-PT-PB);
+  const clampW = w => Math.min(w, wHi);
+
+  let s = "<svg viewBox='0 0 "+W+" "+H+"' width='100%' style='min-width:660px;display:block' font-family='inherit'>";
+
+  /* grid */
+  for(let t=Math.ceil(tLo/5)*5;t<=tHi;t+=5){
+    s += "<line x1='"+x(t)+"' x2='"+x(t)+"' y1='"+PT+"' y2='"+y(0)+"' stroke='var(--line)'/>" +
+         "<text x='"+x(t)+"' y='"+(y(0)+16)+"' font-size='11' fill='var(--muted)' text-anchor='middle'>"+t+"</text>";
+  }
+  for(let w=0;w<=wHi;w+=5){
+    s += "<line x1='"+PL+"' x2='"+(W-PR)+"' y1='"+y(w)+"' y2='"+y(w)+"' stroke='var(--line)'/>" +
+         "<text x='"+(PL-8)+"' y='"+(y(w)+4)+"' font-size='11' fill='var(--muted)' text-anchor='end'>"+w+"</text>";
+  }
+
+  /* RH curves */
+  const rhCurve = rh => {
+    const seg=[];
+    for(let t=tLo;t<=tHi+0.001;t+=0.5){
+      const w=humRatio(t,rh);
+      if(w>wHi){ if(seg.length){ /* clip */ } break; }
+      seg.push(x(t).toFixed(1)+","+y(w).toFixed(1));
+    }
+    return seg;
+  };
+  for(let rh=10;rh<=100;rh+=10){
+    const seg=rhCurve(rh); if(seg.length<2) continue;
+    const sat = rh===100;
+    s += "<polyline points='"+seg.join(" ")+"' fill='none' stroke='var(--muted)' " +
+         "stroke-width='"+(sat?1.6:0.9)+"' opacity='"+(sat?.75:.35)+"'/>";
+    const last = seg[seg.length-1].split(",");
+    s += "<text x='"+(+last[0]+4)+"' y='"+(+last[1]-3)+"' font-size='10' fill='var(--muted)' opacity='.8'>"+rh+"%</text>";
+  }
+
+  /* comfort zone */
+  if(band){
+    for(const [rhLo,rhHi,g] of ZONES){
+      const L=band[g-1], t0=L[2], t1=L[1];   // night lower .. day upper
+      const bot=[], top=[];
+      for(let t=t0;t<=t1+0.001;t+=0.5){ bot.push([x(t), y(clampW(humRatio(t,rhLo)))]); }
+      for(let t=t1;t>=t0-0.001;t-=0.5){ top.push([x(t), y(clampW(humRatio(t,rhHi)))]); }
+      const d="M"+bot.concat(top).map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join("L")+"Z";
+      s += "<path d='"+d+"' fill='var(--comfort)' opacity='.16' stroke='var(--comfort)' " +
+           "stroke-width='.8' stroke-opacity='.5'/>";
+      const my=(y(clampW(humRatio((t0+t1)/2,rhLo)))+y(clampW(humRatio((t0+t1)/2,rhHi))))/2;
+      s += "<text x='"+x((t0+t1)/2)+"' y='"+(my+3)+"' font-size='9.5' fill='var(--comfort)' " +
+           "text-anchor='middle' opacity='.9'>HG "+g+"</text>";
+    }
+  }
+
+  /* months */
+  for(let i=0;i<12;i++){
+    const d=perMonth[i]; if(!d) continue;
+    const dim = psychOnly!==null && psychOnly!==i;
+    const c = monCol(i), op = dim ? .12 : 1;
+    if(d.kind==="loop"){
+      const pl = d.loop.map(p=>x(p.t).toFixed(1)+","+y(clampW(p.w)).toFixed(1)).join(" ");
+      s += "<polygon points='"+pl+"' fill='"+c+"' fill-opacity='"+(dim?.04:.13)+"' stroke='"+c+
+           "' stroke-width='"+(psychOnly===i?2.4:1.6)+"' stroke-opacity='"+op+"' stroke-linejoin='round'/>";
+    } else if(d.kind==="box"){
+      const bx=x(d.box.t0), bw=x(d.box.t1)-x(d.box.t0);
+      const by=y(clampW(d.box.w1)), bh=y(clampW(d.box.w0))-y(clampW(d.box.w1));
+      s += "<rect x='"+bx+"' y='"+by+"' width='"+bw+"' height='"+Math.max(1,bh)+"' rx='3' fill='"+c+
+           "' fill-opacity='"+(dim?.04:.13)+"' stroke='"+c+"' stroke-width='"+(psychOnly===i?2.4:1.5)+
+           "' stroke-opacity='"+op+"'/>";
+    } else {
+      s += "<line x1='"+x(d.a.t)+"' y1='"+y(clampW(d.a.w))+"' x2='"+x(d.b.t)+"' y2='"+y(clampW(d.b.w))+
+           "' stroke='"+c+"' stroke-width='"+(psychOnly===i?3.4:2.4)+"' stroke-opacity='"+op+
+           "' stroke-linecap='round'/>";
+      [d.a,d.b].forEach(p=>{ s += "<circle cx='"+x(p.t)+"' cy='"+y(clampW(p.w))+"' r='3.4' fill='"+c+
+           "' fill-opacity='"+op+"'/>"; });
+    }
+    if(d.mean && !dim){
+      s += "<circle cx='"+x(d.mean.t)+"' cy='"+y(clampW(d.mean.w))+"' r='2.6' fill='var(--panel)' stroke='"+c+"' stroke-width='1.6'/>";
+      s += "<text x='"+(x(d.mean.t)+7)+"' y='"+(y(clampW(d.mean.w))-6)+"' font-size='10' font-weight='600' fill='"+c+"'>"+MONTHS[i]+"</text>";
+    }
+  }
+
+  s += "<text x='"+((PL+W-PR)/2)+"' y='"+(H-6)+"' font-size='11.5' fill='var(--muted)' text-anchor='middle'>Dry-bulb temperature, °C</text>";
+  s += "<text transform='translate(14,"+((PT+y(0))/2)+") rotate(-90)' font-size='11.5' fill='var(--muted)' text-anchor='middle'>Humidity ratio, g / kg dry air</text>";
+  s += "</svg>";
+  $("psych").innerHTML = s;
+
+  $("psychLegend").innerHTML =
+    "<button class='"+(psychOnly===null?"":"off")+"' data-pm='all'>All months</button>" +
+    MONTHS.map((m,i)=>"<button class='"+(psychOnly===null||psychOnly===i?"":"off")+"' data-pm='"+i+"' "+
+      "style='border-color:"+monCol(i)+";color:"+monCol(i)+"'>"+m+"</button>").join("");
+  $("psychLegend").querySelectorAll("button").forEach(b=>{
+    b.onclick = ()=>{
+      const v=b.dataset.pm;
+      psychOnly = (v==="all") ? null : (psychOnly===+v ? null : +v);
+      drawPsych(computeAll());
+    };
+  });
+
+  const hasHourly = !!(hr && hr.months.some(m=>m.n));
+  $("pLoop").disabled = !hasHourly; $("pBox").disabled = !hasHourly;
+  $("pLoop").title = $("pBox").title = hasHourly ? "" : "Load an EPW file — these views need the hourly data";
+  document.querySelectorAll("[data-pmode]").forEach(b=>b.classList.toggle("on", b.dataset.pmode===psychMode));
+  $("psychNote").innerHTML = hasHourly
+    ? (psychMode==="loop"
+        ? "Each closed path is the mean 24-hour cycle for that month, built from the EPW hourly data. The hollow dot is the monthly mean."
+        : "Each box spans the 5th to 95th percentile of dry-bulb temperature and humidity ratio across all hours of that month.")
+    : "Drawn from the twelve monthly figures: each line runs from the night point (mean minimum temperature) to the day point (mean maximum). " +
+      (state.rhAm.some(v=>v!==null) && state.rhPm.some(v=>v!==null)
+        ? "The a.m. and p.m. humidity readings give each end its own moisture content."
+        : "With only an average humidity available, moisture content is held constant through the day, which is the usual assumption. Load an EPW file for the real hourly cycle.");
+}
+
+document.querySelectorAll("[data-pmode]").forEach(b=>{
+  b.onclick = ()=>{ psychMode = b.dataset.pmode; drawPsych(computeAll()); };
+});
+
+/* =====================================================================
+   INPUT HANDLING
+   ===================================================================== */
+document.addEventListener("input", e=>{
+  const el = e.target;
+  if(el.classList.contains("cell")){
+    const k=el.dataset.key, i=+el.dataset.i;
+    if(k==="windP"||k==="windS") state[k][i]=el.value.trim();
+    else {
+      const v=el.value.trim();
+      state[k][i] = v==="" ? null : (Number.isFinite(+v) ? +v : null);
+      if(k==="rhAm"||k==="rhPm") syncAvg(i);
+    }
+    rerenderKeepFocus(el);
+  } else if(["locName","locLat","locLon","locAlt"].includes(el.id)){
+    state.loc[el.id.slice(3).toLowerCase()] = el.value; save();
+  }
+});
+function syncAvg(i){
+  const a=state.rhAm[i], b=state.rhPm[i];
+  if(a!==null && b!==null) state.rhAvg[i] = Math.round((a+b)/2);
+}
+function rerenderKeepFocus(el){
+  const k=el.dataset.key, i=el.dataset.i, pos=el.selectionStart;
+  render();
+  const nel = document.querySelector("input.cell[data-key='"+k+"'][data-i='"+i+"']");
+  if(nel){ nel.focus(); try{ nel.setSelectionRange(pos,pos); }catch(_){} }
+}
+document.addEventListener("paste", e=>{
+  const el=e.target;
+  if(!el.classList||!el.classList.contains("cell")) return;
+  const txt=(e.clipboardData||window.clipboardData).getData("text");
+  const parts=txt.split(/[\t,;\n\r]+/).map(s=>s.trim()).filter(s=>s!=="");
+  if(parts.length<2) return;
+  e.preventDefault();
+  const k=el.dataset.key; let i=+el.dataset.i;
+  for(const p of parts){
+    if(i>11) break;
+    if(k==="windP"||k==="windS") state[k][i]=p;
+    else { state[k][i] = Number.isFinite(+p) ? +p : null; if(k==="rhAm"||k==="rhPm") syncAvg(i); }
+    i++;
+  }
+  render();
+});
+
+/* =====================================================================
+   EPW PARSING
+   ===================================================================== */
+const SECTORS16 = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+const rhMode = () => $("rhMethod").value;
+
+function pctile(sorted, q){
+  if(!sorted.length) return null;
+  const idx = (sorted.length-1)*q, lo = Math.floor(idx), hi = Math.ceil(idx);
+  return lo===hi ? sorted[lo] : sorted[lo] + (sorted[hi]-sorted[lo])*(idx-lo);
+}
+
+function parseEPW(text){
+  const lines = text.split(/\r?\n/);
+  const out = {loc:{}, warn:[]};
+
+  const locLine = lines.find(l=>/^location/i.test(l));
+  if(locLine){
+    const f=locLine.split(",");
+    out.loc.name = [f[1],f[3]].filter(x=>x&&x.trim()&&x.trim()!=="-").join(", ");
+    out.loc.lat=f[6]; out.loc.lon=f[7]; out.loc.alt=f[9];
+  }
+
+  const days = new Map();
+  const mon = Array.from({length:12},()=>({
+    rain:0, rainMiss:0, wind:new Array(16).fill(0),
+    t:[], w:[], hourT:Array.from({length:24},()=>[]), hourW:Array.from({length:24},()=>[])
+  }));
+  let nRows=0;
+
+  for(const line of lines){
+    if(!line || line.length<40) continue;
+    const f = line.split(",");
+    if(f.length < 30) continue;
+    const m = +f[1];
+    if(!Number.isInteger(m) || m<1 || m>12) continue;
+    if(!Number.isFinite(+f[2]) || !Number.isFinite(+f[3])) continue;
+    nRows++;
+
+    const hr=+f[3], db=+f[6], rh=+f[8], wd=+f[20], ws=+f[21], pr=+f[33];
+    const M = mon[m-1];
+    const key = f[0]+"|"+f[1]+"|"+f[2];
+    let d = days.get(key);
+    if(!d){ d={m:m-1,tmax:-Infinity,tmin:Infinity,rhMax:-Infinity,rhMin:Infinity,rhAm:null,rhPm:null}; days.set(key,d); }
+
+    const tOk = Number.isFinite(db) && db>-90 && db<90;
+    const rOk = Number.isFinite(rh) && rh>=0 && rh<=100;
+    if(tOk){
+      if(db>d.tmax) d.tmax=db;
+      if(db<d.tmin) d.tmin=db;
+      M.t.push(db);
+    }
+    if(rOk){
+      if(rh>d.rhMax) d.rhMax=rh;
+      if(rh<d.rhMin) d.rhMin=rh;
+      if(hr===7)  d.rhAm=rh;
+      if(hr===15) d.rhPm=rh;
+    }
+    if(tOk && rOk){
+      const w = humRatio(db, rh);
+      M.w.push(w);
+      const h24 = ((hr%24)+24)%24;        // EPW hour 1..24 -> 1..23,0
+      M.hourT[h24].push(db);
+      M.hourW[h24].push(w);
+    }
+    if(Number.isFinite(pr) && pr>=0 && pr<900) M.rain += pr; else M.rainMiss++;
+    if(Number.isFinite(ws) && ws>=0.5 && ws<90 && Number.isFinite(wd) && wd>=0 && wd<=360)
+      M.wind[Math.round((wd%360)/22.5)%16]++;
+  }
+
+  if(nRows < 100) throw new Error("No hourly data rows found — is this really an EPW file?");
+
+  /* --- monthly means of daily extremes --- */
+  const acc = Array.from({length:12},()=>({tmax:[],tmin:[],rhA:[],rhP:[]}));
+  for(const d of days.values()){
+    const a = acc[d.m];
+    if(d.tmax>-Infinity) a.tmax.push(d.tmax);
+    if(d.tmin< Infinity) a.tmin.push(d.tmin);
+    if(rhMode()==="hours"){
+      if(d.rhAm!==null) a.rhA.push(d.rhAm);
+      if(d.rhPm!==null) a.rhP.push(d.rhPm);
+    } else {
+      if(d.rhMax>-Infinity) a.rhA.push(d.rhMax);
+      if(d.rhMin< Infinity) a.rhP.push(d.rhMin);
+    }
+  }
+  const mean = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : null;
+  const rnd  = (v,dp) => v===null ? null : Math.round(v*Math.pow(10,dp))/Math.pow(10,dp);
+
+  out.tmax = acc.map(a=>rnd(mean(a.tmax),1));
+  out.tmin = acc.map(a=>rnd(mean(a.tmin),1));
+  out.rhAm = acc.map(a=>rnd(mean(a.rhA),0));
+  out.rhPm = acc.map(a=>rnd(mean(a.rhP),0));
+  out.rhAvg= out.rhAm.map((v,i)=> (v===null||out.rhPm[i]===null) ? null : Math.round((v+out.rhPm[i])/2));
+
+  /* --- rainfall --- */
+  const totalRain = mon.reduce((s,x)=>s+x.rain,0);
+  const missShare = mon.reduce((s,x)=>s+x.rainMiss,0) / nRows;
+  if(missShare>0.5){
+    out.rain = M0();
+    out.warn.push("This EPW has no usable liquid-precipitation data (field 34 is missing for "+
+      Math.round(missShare*100)+"% of hours). Enter monthly rainfall by hand — indicator H3 and every rain-protection recommendation depend on it.");
+  } else if(totalRain===0){
+    out.rain = new Array(12).fill(0);
+    out.warn.push("This EPW reports zero rainfall for the whole year, which is almost certainly a gap in the file rather than a desert record. Check monthly rainfall against another source.");
+  } else out.rain = mon.map(x=>Math.round(x.rain));
+
+  /* --- wind --- */
+  out.windP=[]; out.windS=[];
+  for(let i=0;i<12;i++){
+    const w=mon[i].wind, tot=w.reduce((a,b)=>a+b,0);
+    if(!tot){ out.windP.push(""); out.windS.push(""); continue; }
+    const order = w.map((c,j)=>[c,j]).sort((a,b)=>b[0]-a[0]);
+    out.windP.push(SECTORS16[order[0][1]]);
+    out.windS.push(order[1][0]>0 ? SECTORS16[order[1][1]] : "");
+  }
+
+  /* --- compact hourly aggregates --- */
+  let tMinAll=Infinity, tMaxAll=-Infinity;
+  for(const M of mon) for(const v of M.t){ if(v<tMinAll) tMinAll=v; if(v>tMaxAll) tMaxAll=v; }
+  const tLo = Math.floor(tMinAll) - 1;
+  const tUp = Math.ceil (tMaxAll) + 1;
+  const tBin = 1, nBins = Math.max(1, Math.ceil((tUp-tLo)/tBin));
+  const r2 = v => v===null?null:Math.round(v*100)/100;
+
+  out.hourly = { tLo, tBin, months: mon.map(M=>{
+    if(!M.t.length) return {n:0};
+    const st=[...M.t].sort((a,b)=>a-b), sw=[...M.w].sort((a,b)=>a-b);
+    const hist=new Array(nBins).fill(0);
+    for(const v of M.t){ const b=Math.min(nBins-1,Math.max(0,Math.floor((v-tLo)/tBin))); hist[b]++; }
+    const hMean = arr => arr.length ? r2(arr.reduce((a,b)=>a+b,0)/arr.length) : null;
+    const dT=[], dW=[];
+    for(let h=0;h<24;h++){
+      const a=hMean(M.hourT[h]), b=hMean(M.hourW[h]);
+      if(a!==null && b!==null){ dT.push(a); dW.push(b); }
+    }
+    return {
+      n: M.t.length, hist,
+      tp: [0,.05,.25,.5,.75,.95,1].map(q=>r2(pctile(st,q))),
+      wp: [.05,.95].map(q=>r2(pctile(sw,q))),
+      tMean: r2(st.reduce((a,b)=>a+b,0)/st.length),
+      wMean: sw.length ? r2(sw.reduce((a,b)=>a+b,0)/sw.length) : 0,
+      dT, dW
+    };
+  })};
+
+  return out;
+}
+
+function applyEPW(res, filename){
+  state.loc.name = res.loc.name || filename.replace(/\.epw$/i,"");
+  state.loc.lat  = res.loc.lat ?? "";
+  state.loc.lon  = res.loc.lon ?? "";
+  state.loc.alt  = res.loc.alt ?? "";
+  ["tmax","tmin","rhAm","rhPm","rhAvg","rain","windP","windS","hourly"].forEach(k=>state[k]=res[k]);
+  psychOnly = null;
+  fillMeta();
+  render();
+  setStatus(res.warn.length
+    ? "Loaded " + filename + ". " + res.warn.join(" ")
+    : "Loaded " + filename + ". All twelve months filled, and the hourly data is available for the Box, Leaf and psychrometric views.",
+    res.warn.length ? "err" : "ok");
+}
+function setStatus(msg, cls){ const s=$("status"); s.textContent=msg||""; s.className=cls||""; }
+
+function readEpwFile(file){
+  if(!file) return;
+  setStatus("Reading " + file.name + " …");
+  const fr = new FileReader();
+  fr.onload = () => {
+    try { applyEPW(parseEPW(fr.result), file.name); }
+    catch(err){ setStatus("Could not read this file: " + err.message, "err"); }
+  };
+  fr.onerror = () => setStatus("Could not read this file.", "err");
+  fr.readAsText(file);
+}
+
+const drop = $("drop");
+drop.addEventListener("click", ()=>$("fileEpw").click());
+["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
+drop.addEventListener("drop", e=>readEpwFile(e.dataTransfer.files[0]));
+$("fileEpw").addEventListener("change", e=>{ readEpwFile(e.target.files[0]); e.target.value=""; });
+$("rhMethod").addEventListener("change", ()=>setStatus("Humidity method changed — re-drop the EPW file to apply it.",""));
+
+/* =====================================================================
+   SAMPLE / SAVE / LOAD
+   ===================================================================== */
+const SAMPLE = {
+  loc:{name:"Ahmedabad, India", lat:"23.07", lon:"72.63", alt:"55"},
+  tmax:[27,30,35,39,40,37,32,30,32,34,32,29],
+  tmin:[14,16,20,24,26,28,26,25,24,22,19,15],
+  rhAm:M0(), rhPm:M0(),
+  rhAvg:[50,42,38,41,48,62,77,81,72,55,50,55],
+  rain:[2,1,0,3,20,103,247,288,83,23,14,5],
+  windP:new Array(12).fill(""), windS:new Array(12).fill(""),
+  hourly:null
+};
+function loadSample(){
+  Object.keys(SAMPLE).forEach(k => state[k] = k==="loc" ? {...SAMPLE.loc}
+    : (Array.isArray(SAMPLE[k]) ? SAMPLE[k].slice() : SAMPLE[k]));
+  psychOnly=null; chartMode="range";
+}
+$("btnSample").onclick = ()=>{
+  loadSample(); fillMeta(); render();
+  setStatus("Sample data loaded — the Ahmedabad example from the spreadsheet. Box and Leaf views need an EPW file.","ok");
+};
+$("btnClear").onclick = ()=>{
+  state.loc={name:"",lat:"",lon:"",alt:""};
+  ["tmax","tmin","rhAm","rhPm","rhAvg","rain"].forEach(k=>state[k]=M0());
+  state.windP=new Array(12).fill(""); state.windS=new Array(12).fill("");
+  state.hourly=null; psychOnly=null; chartMode="range";
+  fillMeta(); render(); setStatus("");
+};
+$("btnPrint").onclick = ()=>window.print();
+$("btnSave").onclick = ()=>{
+  const blob = new Blob([JSON.stringify(state,null,1)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=(state.loc.name||"mahoney").replace(/[^\w-]+/g,"_")+"_mahoney.json";
+  a.click(); URL.revokeObjectURL(a.href);
+};
+$("fileJson").addEventListener("change", e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const fr=new FileReader();
+  fr.onload=()=>{
+    try{
+      const o=JSON.parse(fr.result);
+      Object.keys(state).forEach(k=>{ if(o[k]!==undefined) state[k]=o[k]; });
+      psychOnly=null; fillMeta(); render();
+      setStatus("Inputs restored from "+f.name+".","ok");
+    }catch(err){ setStatus("That file is not a saved input set.","err"); }
+  };
+  fr.readAsText(f); e.target.value="";
+});
+
+function fillMeta(){
+  $("locName").value=state.loc.name||"";
+  $("locLat").value =state.loc.lat ||"";
+  $("locLon").value =state.loc.lon ||"";
+  $("locAlt").value =state.loc.alt ||"";
+}
+function save(){ try{ localStorage.setItem("mahoney", JSON.stringify(state)); }catch(_){} }
+function restore(){
+  try{
+    const o=JSON.parse(localStorage.getItem("mahoney")||"null");
+    if(o){ Object.keys(state).forEach(k=>{ if(o[k]!==undefined) state[k]=o[k]; }); return true; }
+  }catch(_){}
+  return false;
+}
+
+if(window.matchMedia)
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ()=>render());
+
+if(!restore()) loadSample();
+fillMeta();
+render();
+</script>
+</body>
+</html>
